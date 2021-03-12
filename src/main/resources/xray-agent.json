@@ -1,0 +1,13 @@
+{
+  "serviceName": "MySpringService",
+  "contextMissingStrategy": "LOG_ERROR",
+  "daemonAddress": "127.0.0.1:2000",
+  "tracingEnabled": true,
+  "samplingStrategy": "CENTRAL",
+  "traceIdInjectionPrefix": "trace-id",
+  "maxStackTraceLength": 50,
+  "streamingThreshold": 100,
+  "traceIdInjection": true,
+  "pluginsEnabled": true,
+  "contextPropagation": true
+}
