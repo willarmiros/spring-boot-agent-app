@@ -9,5 +9,6 @@
   "streamingThreshold": 100,
   "traceIdInjection": true,
   "pluginsEnabled": true,
-  "contextPropagation": true
+  "contextPropagation": true,
+  "collectSqlQueries": true
 }
