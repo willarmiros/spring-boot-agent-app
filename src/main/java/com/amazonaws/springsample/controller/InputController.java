@@ -5,7 +5,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.xray.AWSXRay;
-import com.amazonaws.xray.listeners.SegmentListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -13,23 +12,12 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.ListTablesResponse;
 
-import java.lang.reflect.InvocationTargetException;
-
 @RestController
 public class InputController {
-    private static final Logger logger = LoggerFactory.getLogger(com.amazonaws.springsample.controller.InputController.class);
+    private static final Logger logger = LoggerFactory.getLogger(InputController.class);
 
     @RequestMapping("/")
     public String home() {
-        String className = "com.amazonaws.xray.slf4j.SLF4JSegmentListener";
-        try {
-            final Class<?> listenerClass = Class.forName(className);
-            final SegmentListener listener = (SegmentListener) listenerClass.getConstructor(String.class).newInstance("prefix");
-            logger.debug("Successfully instantiated " + className + " on system class path.");
-        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-            logger.debug("Could not find " + className + " on system class path.", e);
-        }
-
         System.out.println("Hello home!");
         return "Hello Docker World";
     }
