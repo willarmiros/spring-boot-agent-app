@@ -12,6 +12,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.ListTablesResponse;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -28,6 +29,7 @@ public class InputController {
     private Connection conn;
     private PreparedStatement insertStmt;
     private PreparedStatement queryStmt;
+    private CallableStatement updateStmt;
 
     public InputController() {
         try {
@@ -36,6 +38,7 @@ public class InputController {
             conn = DriverManager.getConnection(connUrl, System.getenv("ORACLE_DB_USER"), System.getenv("ORACLE_DB_PWD"));
             insertStmt = conn.prepareStatement("insert into " + TABLE_NAME + " values(?, ?, ?)");
             queryStmt = conn.prepareStatement("select * from " + TABLE_NAME + " where id=?");
+            updateStmt = conn.prepareCall("update " + TABLE_NAME + " set age=42 where id=?");
         } catch (Exception e) {
             logger.error("Failed to connect to Oracle DB", e);
         }
@@ -142,6 +145,14 @@ public class InputController {
         }
 
         return "Employees:\n" + sb.toString();
+    }
+
+    @RequestMapping("/update-employee")
+    public String updateEmployee() throws SQLException {
+        updateStmt.setInt(1, 0);
+        int rows = updateStmt.executeUpdate();
+
+        return "Updated the age for " + rows + " employees!";
     }
 
     @RequestMapping("/exception")
