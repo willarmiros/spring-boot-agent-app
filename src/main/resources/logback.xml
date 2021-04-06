@@ -3,8 +3,7 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     ​
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
-    <!-- Example for logging into the build folder of your project -->
-    <property name="LOG_FILE" value="${BUILD_FOLDER:-build}/${springAppName}"/>​
+    <property name="LOGS" value="./logs"/>​
 
     <!-- You can override this to have a custom pattern -->
     <property name="CONSOLE_LOG_PATTERN"
@@ -22,29 +21,35 @@
         </encoder>
     </appender>
 
-    <!-- Appender to log to file -->​
-    <appender name="flatfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd_HH-mm}.%i.gz</fileNamePattern>
-            <maxHistory>10</maxHistory>
-            <maxFileSize>100</maxFileSize>
-            <totalSizeCap>1GB</totalSizeCap>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-            <charset>utf8</charset>
-        </encoder>
+    <appender name="RollingFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>${LOGS}/spring-boot-logger.log</file>
+      <encoder
+              class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        <charset>utf8</charset>
+      </encoder>
+
+      <rollingPolicy
+              class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- rollover daily and when the file reaches 10 MegaBytes -->
+        <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}.%i.log
+        </fileNamePattern>
+        <timeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+          <maxFileSize>10MB</maxFileSize>
+        </timeBasedFileNamingAndTriggeringPolicy>
+      </rollingPolicy>
     </appender>
     ​
     <logger name="com.amazonaws.springsample" level="debug" additivity="false">
         <appender-ref ref="console"/>
-        <appender-ref ref="flatfile"/>
+        <appender-ref ref="RollingFile"/>
     </logger>
 
     <logger name="com.amazonaws.xray" level="debug" additivity="false">
         <appender-ref ref="console"/>
-        <appender-ref ref="flatfile"/>
+        <appender-ref ref="RollingFile"/>
     </logger>
 
     <root level="INFO,DEBUG">
