@@ -6,12 +6,11 @@ services:
       - "8080:8080"
     environment:
       AWS_XRAY_DAEMON_ADDRESS: "daemon:2000"
-      AWS_LOG_GROUP: "/docker/my-docker-group"
   daemon:
     image: "public.ecr.aws/xray/aws-xray-daemon:latest"
     environment:
       AWS_REGION: "us-west-2"
-    command: "-l debug -t 0.0.0.0:2000 -b 0.0.0.0:2000"
+    command: "-t 0.0.0.0:2000 -b 0.0.0.0:2000"
     ports:
       - "2000:2000/tcp"
       - "2000:2000/udp"
